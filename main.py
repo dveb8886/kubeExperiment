@@ -45,10 +45,14 @@ def hello():
         session.clear()
 
     if "token" in session:
+        memory = "Not Found"
+        if session["token"] in session_memory:
+            memory = session_memory[session["token"]]
         session_html = """
-        <form method="POST" action="{}">{} {}<div>Token: {}</div></form>
+        <form method="POST" action="{}">{} {}<div>Token: {}</div><div>Memory: {}</div></form>
         """
-        session_html = session_html.format(url_for("hello"), form.hidden_tag(), form.close_session(), session["token"])
+        session_html = session_html.format(url_for("hello"), form.hidden_tag(), form.close_session(),
+                                           session["token"], memory)
     else:
         session_html = """
         <form method="POST" action="{}">{}{}</form>
