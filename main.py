@@ -40,7 +40,8 @@ def hello():
         session_memory[session["token"]] = "" + "".join([hex(random.randint(0,15))[2:] for x in range(32)])
 
     if form.close_session.data:
-        del session_memory[session["token"]]
+        if session["token"] in session_memory:
+            del session_memory[session["token"]]
         session.clear()
 
     if "token" in session:
