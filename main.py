@@ -39,6 +39,11 @@ def hello():
     return result
 
 
+@app.route('/healthcheck')
+def health_check():
+    return "Alive"
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=8080)
 
