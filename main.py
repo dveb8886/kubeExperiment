@@ -4,6 +4,10 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Hidde
 from wtforms.validators import InputRequired, EqualTo, Length
 import random, math
 
+session_memory = {
+
+}
+
 
 def isColorLight(rgb=[0,128,255]):
     [r, g, b] = rgb
@@ -33,8 +37,10 @@ def hello():
 
     if form.open_session.data:
         session["token"] = "".join([hex(random.randint(0,15))[2:] for x in range(32)])
+        session_memory[session["token"]] = "" + "".join([hex(random.randint(0,15))[2:] for x in range(32)])
 
     if form.close_session.data:
+        del session_memory[session["token"]]
         session.clear()
 
     if "token" in session:
