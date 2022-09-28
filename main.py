@@ -1,4 +1,4 @@
-from flask import Flask, session, url_for
+from flask import Flask, session, url_for, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import InputRequired, EqualTo, Length
@@ -79,9 +79,17 @@ def hello():
     return result
 
 
-@app.route('/healthcheck')
-def health_check():
-    return "Alive"
+@app.route('/alive')
+def health_alive():
+    return "OK"
+
+@app.route('/ready')
+def health_ready():
+    return jsonify(
+        backend='ready',
+        db='ready',
+        queue='ready'
+    )
 
 
 if __name__ == '__main__':
