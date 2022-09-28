@@ -49,6 +49,7 @@ metadata:
   labels:
     app: kubex
 spec:
+  type: NodePort
   ports:
   - port: 80
     protocol: TCP
@@ -64,6 +65,8 @@ metadata:
   annotations:
     # Disables http redirect to https
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # Enables use of octavia
+    kubernetes.io/ingress.class: "openstack"
 spec:
   rules:
   - http:
