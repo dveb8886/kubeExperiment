@@ -3,3 +3,4 @@ site.db
 .git/
 venv/
 kube/
+__pycache__/

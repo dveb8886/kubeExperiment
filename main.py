@@ -61,11 +61,10 @@ with engine.connect() as con:
 @app.route("/books/add")
 def add_book():
     data = {
-        'id': int(request.args.get('id')),
         'title': request.args.get('title')
     }
     with engine.connect() as con:
-        stmt = text("INSERT INTO book(id, title) VALUES(:id, :title)")
+        stmt = text("INSERT INTO book(title) VALUES(:title)")
         con.execute(stmt, **data)
     return "success"
 
