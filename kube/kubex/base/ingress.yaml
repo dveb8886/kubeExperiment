@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: flask
+  name: kubex
   namespace: default
 spec:
   rules:
-    - host: dev.k8s
+    - host: ${HOST}
       http:
         paths:
           - path: /
             pathType: ImplementationSpecific
             backend:
               service:
-                name: flask
+                name: kubex
                 port:
                   number: 80

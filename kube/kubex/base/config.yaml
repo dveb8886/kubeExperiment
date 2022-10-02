@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: flask
+  name: kubex
   namespace: default
 data:
-  FLASK_PORT: "8080"
-  FLASK_DEBUG: "0"
+  FLASK_PORT: "${FLASK_PORT}"
+  FLASK_DEBUG: "${FLASK_DEBUG}"
+  SQLALCHEMY_DATABASE_URI: "${SQLALCHEMY_DATABASE_URI}"
+  SQLALCHEMY_DATABASE_URI_READONLY: "${SQLALCHEMY_DATABASE_URI_READONLY}"
 ---
 apiVersion: v1
 kind: ConfigMap

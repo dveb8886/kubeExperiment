@@ -1,0 +1,7 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubex
+  annotations:
+    kubernetes.io/ingress.class: "openstack"
+    octavia.ingress.kubernetes.io/internal: "false"

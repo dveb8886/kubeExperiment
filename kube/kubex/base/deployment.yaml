@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask
+  name: kubex
   labels:
-    app: flask
+    app: kubex
 spec:
   replicas: 2
   progressDeadlineSeconds: 120
@@ -13,23 +13,23 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: flask
+      app: kubex
   template:
     metadata:
-      name: flask
+      name: kubex
       labels:
-        app: flask
+        app: kubex
     spec:
       restartPolicy: Always
       containers:
-        - name: flask
-          image: localhost:5000/flask:v1
+        - name: kubex
+          image: ${KUBEX_IMAGE}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:
             - configMapRef:
-                name: flask
+                name: kubex
           volumeMounts:
             - mountPath: /app/public
               name: public-dir
@@ -73,7 +73,7 @@ spec:
             periodSeconds: 5
       initContainers:
         - name: npm
-          image: localhost:5000/flask:v1
+          image: ${KUBEX_IMAGE}
           imagePullPolicy: Always
           workingDir: /app
           command:
