@@ -1,12 +1,23 @@
-from flask import Flask, session, url_for, jsonify
+from flask import Flask, session, url_for, jsonify, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import InputRequired, EqualTo, Length
-import random, math
+import random, math, os
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy import Table, Column, Integer, String, MetaData
+from sqlalchemy.sql import text
 
 session_memory = {
 
 }
+
+metadata = MetaData()
+books = Table('book', metadata,
+        Column('id', Integer, primary_key=True),
+        Column('title', String)
+    )
+
 
 
 def isColorLight(rgb=[0,128,255]):
@@ -22,8 +33,41 @@ app = Flask(__name__)
 app.secret_key = "SecretKey"
 num = random.randint(0, 999)
 bg_color_vals = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-bg_color = "#" + "".join(hex(x)[2:] for x in bg_color_vals)
+bg_color = "#" + "".join(hex(x)[2:].zfill(2) for x in bg_color_vals)
 fg_color = "#000" if isColorLight(rgb=bg_color_vals) else "#fff"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///site.db')
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+metadata.create_all(engine)
+
+with engine.connect() as con:
+    rs = con.execute("SELECT * FROM book")
+    exists = False
+    for row in rs:
+        exists = True
+        break
+    if not exists:
+        data = [
+            {'id': 1, 'title': "The Hobbit"},
+            {'id': 2, 'title': "The Silmarillion"}
+        ]
+
+        stmt = text("INSERT INTO book(id, title) VALUES(:id, :title)")
+
+        for line in data:
+            con.execute(stmt, **line)
+
+
+@app.route("/books/add")
+def add_book():
+    data = {
+        'id': int(request.args.get('id')),
+        'title': request.args.get('title')
+    }
+    with engine.connect() as con:
+        stmt = text("INSERT INTO book(id, title) VALUES(:id, :title)")
+        con.execute(stmt, **data)
+    return "success"
 
 
 class SessionForm(FlaskForm):
@@ -59,6 +103,19 @@ def hello():
         """
         session_html = session_html.format(url_for("hello"), form.hidden_tag(),  form.open_session())
 
+    book_html = """<html>
+            <body>
+            {}
+            </body>
+        </html>"""
+
+    list_html = ""
+    with engine.connect() as con:
+        rs = con.execute("SELECT * FROM book")
+        for row in rs:
+            list_html += "{}: {}<br />".format(row[0], row[1])
+    book_html = book_html.format(list_html)
+
     result = """
         <html>
         <body>
@@ -72,10 +129,11 @@ def hello():
                 {:0>3d}
             </div>
             {}
+            {}
         </body>
         </html>
     """
-    result = result.format(bg_color, fg_color, num, session_html)
+    result = result.format(bg_color, fg_color, num, session_html, book_html)
     return result
 
 
@@ -93,6 +151,9 @@ def health_ready():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=8080)
+    app.run(
+        debug=os.getenv('FLASK_DEBUG', True),
+        host=os.getenv('FLASK_IP', "0.0.0.0"),
+        port=os.getenv('FLASK_PORT', 8080))
 
 

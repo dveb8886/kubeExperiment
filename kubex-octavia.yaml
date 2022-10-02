@@ -67,6 +67,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     # Enables use of octavia
     kubernetes.io/ingress.class: "openstack"
+    octavia.ingress.kubernetes.io/internal: "false"
 spec:
   rules:
   - http:
