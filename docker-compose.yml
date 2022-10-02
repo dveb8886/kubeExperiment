@@ -1,0 +1,19 @@
+version: "3"
+services:
+  flask-app:
+    build:
+      dockerfile: docker/flask/Dockerfile
+      context: .
+    ports:
+      - 8080
+    volumes:
+      - ./:/app
+      - ./public:/app/public
+
+  flask-nginx:
+    image: nginx
+    volumes:
+      - ./docker/nginx/proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./public:/app/public
+    ports:
+      - 80:80

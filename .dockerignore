@@ -1,0 +1,5 @@
+site.db
+.idea/
+.git/
+venv/
+kube/
