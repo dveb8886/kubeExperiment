@@ -7,13 +7,13 @@ bases:
 patchesStrategicMerge:
 - deployment.yaml
 
-patches:
-- path: patch_removeTemplates.yaml
-  target:
-    group: apps
-    version: v1
-    kind: StatefulSet
-    name: mysql
+#patches:
+#- path: patch_removeTemplates.yaml
+#  target:
+#    group: apps
+#    version: v1
+#    kind: StatefulSet
+#    name: mysql
 
 resources:
 - cinder.yaml

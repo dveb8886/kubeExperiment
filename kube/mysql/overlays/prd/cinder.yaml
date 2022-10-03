@@ -3,15 +3,15 @@ kind: StorageClass
 metadata:
   name: csi-sc-cinderplugin
 provisioner: cinder.csi.openstack.org
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: csi-pvc-cinderplugin
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: csi-sc-cinderplugin
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: csi-pvc-cinderplugin
+#spec:
+#  accessModes:
+#  - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 5Gi
+#  storageClassName: csi-sc-cinderplugin
