@@ -10,3 +10,12 @@ spec:
       app.kubernetes.io/name: mysql
   serviceName: mysql
   replicas: 3
+  template:
+    volumeMounts:
+      - mountPath: /var/lib/www/html
+        name: csi-data-cinderplugin
+    volumes:
+      - name: csi-data-cinderplugin
+        persistentVolumeClaim:
+          claimName: csi-pvc-cinderplugin
+          readOnly: false
