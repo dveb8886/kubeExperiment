@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: ${INGRESS_API_VERSION}
 kind: Ingress
 metadata:
   name: kubex
