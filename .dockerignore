@@ -1,4 +1,7 @@
 site.db
+deploy.sh
+docker.sh
+docker-compose.yml
 .idea/
 .git/
 venv/
