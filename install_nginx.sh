@@ -1,9 +1,12 @@
-
-
 STARTING_DIR=$(pwd)
 PRJ_DIR=${0%/*}
 HELM_CMD=${1:-install}
 HELM_BRANCH=${2:-release-1.12}
+
+if kubectl config view | grep -q "clusters: null"; then
+  echo "kubectl is not connected to a cluster, this is required to proceed."
+  exit
+fi
 
 cd ${PRJ_DIR} || exit
 if [ ! -d "kube-ingress" ]; then
