@@ -1,4 +1,5 @@
 .idea/
 venv/
 site.db
+kube-ingress/
 __pycache__/

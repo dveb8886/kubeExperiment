@@ -5,5 +5,7 @@ docker-compose.yml
 .idea/
 .git/
 venv/
+kube-ingress/
 kube/
+helm/
 __pycache__/
