@@ -1,5 +1,6 @@
 # shellcheck disable=SC2046
 
+PRJ_DIR=${0%/*}
 target=$1
 apply=""
 
@@ -22,8 +23,8 @@ fi
 # Create the aggregated configuration
 # replaces ${vars} from config.ini in the final configuration
 output=$(
-    kubectl kustomize "${target}" | \
-    sed $(awk -F '=' '{print "-e s=${"$1"}="$2"=g"}' "${target}/config.ini")
+    kubectl kustomize "${PRJ_DIR}/${target}" | \
+    sed $(awk -F '=' '{print "-e s=${"$1"}="$2"=g"}' "${PRJ_DIR}/${target}/config.ini")
   )
 
 # Push to kubectl apply if apply is selected

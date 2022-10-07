@@ -53,7 +53,7 @@ bg_color = "#" + "".join(hex(x)[2:].zfill(2) for x in bg_color_vals)
 fg_color = "#000" if isColorLight(rgb=bg_color_vals) else "#fff"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///site.db')
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], pool_recycle=3600)
 if "mysql://" in app.config['SQLALCHEMY_DATABASE_URI']:
     engine.execute("CREATE DATABASE IF NOT EXISTS app")  # create db
     engine.execute("USE app")  # select new db
@@ -63,7 +63,7 @@ if "book" not in existing_tables:
     metadata.create_all(engine, checkfirst=True)
 
 app.config['SQLALCHEMY_DATABASE_URI_READONLY'] = os.getenv('SQLALCHEMY_DATABASE_URI_READONLY', 'sqlite:///site.db')
-engine_ro = create_engine(app.config['SQLALCHEMY_DATABASE_URI_READONLY'])
+engine_ro = create_engine(app.config['SQLALCHEMY_DATABASE_URI_READONLY'], pool_recycle=3600)
 
 with engine.connect() as con:
     rs = con.execute("SELECT * FROM book")
