@@ -1,6 +1,5 @@
 .idea/
 venv/
 site.db
-kube-ingress/
-kube-ingress-1-12/
+repos/
 __pycache__/
