@@ -1,7 +1,0 @@
-apiVersion: ${INGRESS_API_VERSION}
-kind: Ingress
-metadata:
-  name: kubex
-  annotations:
-    kubernetes.io/ingress.class: "openstack"
-    octavia.ingress.kubernetes.io/internal: "false"
