@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubex.fullname" . }}
+  labels:
+    app: {{ include "kubex.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  progressDeadlineSeconds: 120
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: {{ include "kubex.fullname" . }}
+  template:
+    metadata:
+      name: {{ include "kubex.fullname" . }}
+      labels:
+        app: {{ include "kubex.fullname" . }}
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: kubex
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sd-mysql
+                  key: mysql-password
+                  optional: false
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: {{ include "kubex.fullname" . }}
+          volumeMounts:
+            - mountPath: /app/public
+              name: public-dir
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /app/public/ready
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /app/public/ready
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.kubex.resources | nindent 12 }}
+        - name: nginx
+          image: nginx
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-config
+            - mountPath: /app/public
+              name: public-dir
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /app/public/ready
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /app/public/ready
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: npm
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          workingDir: /app
+          command:
+            - bash
+          args:
+            - build.sh
+          volumeMounts:
+            - mountPath: /app/public
+              name: public-dir
+          resources:
+            {{- toYaml .Values.npm.resources | nindent 12 }}
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ include "kubex.fullname" . }}-flask-nginx
+        - name: public-dir
+          emptyDir: {}

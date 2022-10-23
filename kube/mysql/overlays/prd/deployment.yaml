@@ -10,13 +10,6 @@ spec:
       app.kubernetes.io/name: mysql
   serviceName: mysql
   replicas: 3
-#  template:
-#    spec:
-#      volumes:
-#        - name: data
-#          persistentVolumeClaim:
-#            claimName: csi-pvc-cinderplugin
-#            readOnly: false
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -24,5 +17,5 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 10Gi
+            storage: 11Gi
         storageClassName: csi-sc-cinderplugin

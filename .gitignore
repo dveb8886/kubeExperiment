@@ -2,4 +2,5 @@
 venv/
 site.db
 kube-ingress/
+kube-ingress-1-12/
 __pycache__/
