@@ -29,7 +29,7 @@ spec:
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: sd-mysql
+                  name: {{ .Values.kubex.mysql_secret }}
                   key: mysql-password
                   optional: false
           ports:

@@ -2,7 +2,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "kubex.fullname" . }}
-  namespace: default
 data:
   FLASK_PORT: "{{ .Values.kubex.flask.port }}"
   FLASK_DEBUG: "{{ .Values.kubex.flask.debug }}"
@@ -14,7 +13,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "kubex.fullname" . }}-flask-nginx
-  namespace: default
 data:
   default.conf: |
     server {

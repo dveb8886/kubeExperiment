@@ -1,11 +1,10 @@
 site.db
-deploy.sh
 docker.sh
 docker-compose.yml
 .idea/
 .git/
 venv/
 kube-ingress/
-kube/
 helm/
+repos/
 __pycache__/
