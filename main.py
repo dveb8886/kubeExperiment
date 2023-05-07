@@ -63,9 +63,11 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], pool_recycle=3600)
 if "mysql://" in app.config['SQLALCHEMY_DATABASE_URI']:
     engine.execute("CREATE DATABASE IF NOT EXISTS app")  # create db
     engine.execute("USE app")  # select new db
-rs = engine.execute("SELECT table_name FROM information_schema.tables")
-existing_tables = [row[0] for row in rs]
-if "book" not in existing_tables:
+    rs = engine.execute("SELECT table_name FROM information_schema.tables")
+    existing_tables = [row[0] for row in rs]
+    if "book" not in existing_tables:
+        metadata.create_all(engine, checkfirst=True)
+else:
     metadata.create_all(engine, checkfirst=True)
 
 app.config['SQLALCHEMY_DATABASE_URI_READONLY'] = \
@@ -143,7 +145,8 @@ def hello():
 
     list_html = ""
     with create_session() as conn:
-        conn.execute("USE app")
+        if "mysql://" in app.config['SQLALCHEMY_DATABASE_URI']:
+            conn.execute("USE app")
         rs = conn.execute("SELECT * FROM book")
         for row in rs:
             list_html += "{}: {}<br />".format(row[0], row[1])
